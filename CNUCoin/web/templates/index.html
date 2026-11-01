@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Огляд{% endblock %}
+{% block content %}
+<h1>Навчальна криптовалюта CNUCoin</h1>
+<p class="sub">Хешування {{ crypto.HASH_ALGORITHM }} · ЕЦП {{ crypto.SIGNATURE_ALGORITHM }} · адреса = SHA-256(публічний ключ)</p>
+
+<div class="grid g5">
+  <div class="card stat"><div class="l">Учасників</div><div class="v">{{ stats.members }}</div></div>
+  <div class="card stat"><div class="l">Майнерів</div><div class="v">{{ stats.miners }}</div></div>
+  <div class="card stat"><div class="l">Блоків</div><div class="v">{{ stats.blocks }}</div></div>
+  <div class="card stat"><div class="l">У черзі</div><div class="v">{{ stats.pending }}</div></div>
+  <div class="card stat"><div class="l">В обігу, CNU</div><div class="v gold">{{ stats.supply | cnu }}</div></div>
+</div>
+
+{% if not stats.members %}
+<div class="card" style="margin-top:18px">
+  <div class="empty">
+    База порожня. Зареєструйте учасників на сторінці «Учасники» або
+    <form method="post" action="{{ url_for('seed') }}" style="display:inline"><button>Заповнити демо-даними</button></form>
+  </div>
+</div>
+{% endif %}
+
+<div class="card" style="margin-top:18px">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <h2>Ланцюжок блоків</h2>
+    <div class="audit"><span class="dot {{ '' if audit.ok else 'bad' }}"></span>
+      {{ 'Ланцюжок цілісний' if audit.ok else 'Виявлено порушення цілісності!' }}</div>
+  </div>
+  {% include "_chain.html" %}
+</div>
+
+<div class="grid g2" style="margin-top:18px">
+  <div class="card">
+    <h2>Черга непідтверджених транзакцій</h2>
+    {% if pending %}
+    <table>
+      <tr><th>TAID</th><th>Від → Кому</th><th class="num">Сума</th><th>TAHash</th></tr>
+      {% for t in pending %}
+      <tr><td>#{{ t.TAID }}</td><td>{{ names[t.TAFrom] }} → {{ names[t.TATo] }}</td>
+          <td class="num">{{ t.TASum | cnu }}</td><td class="mono">{{ t.TAHash | short(14) }}</td></tr>
+      {% endfor %}
+    </table>
+    {% else %}<div class="empty">Усі транзакції підтверджено</div>{% endif %}
+  </div>
+  <div class="card">
+    <h2>⛏ Майнінг</h2>
+    {% if miners %}
+    <form method="post" action="{{ url_for('mine') }}">
+      <div class="row"><label>Майнер (IsMiner = 1)</label>
+        <select name="miner">{% for m in miners %}<option value="{{ m.CNUCoinID }}">{{ m.Alias }}</option>{% endfor %}</select></div>
+      <div class="row"><label>Difficulty Target — кількість нулів на початку хешу</label>
+        <select name="difficulty">{% for d in range(1, 6) %}<option value="{{ d }}">{{ d }} ({{ '0' * d }}…)</option>{% endfor %}</select></div>
+      <button {{ 'disabled' if not pending }}>Видобути наступний блок</button>
+    </form>
+    {% else %}<div class="empty">Немає учасників з правом майнінгу</div>{% endif %}
+  </div>
+</div>
+{% endblock %}

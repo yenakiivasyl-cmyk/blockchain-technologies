@@ -1,0 +1,13 @@
+tests/test_aidchain.py::test_merkle_proof_for_every_leaf PASSED          [  8%]
+tests/test_aidchain.py::test_transaction_signature_binds_payload PASSED  [ 16%]
+tests/test_aidchain.py::test_demo_chain_is_valid_and_consistent PASSED   [ 25%]
+tests/test_aidchain.py::test_campaign_accounting PASSED                  [ 33%]
+tests/test_aidchain.py::test_trace_donation PASSED                       [ 41%]
+tests/test_aidchain.py::test_document_verification PASSED                [ 50%]
+tests/test_aidchain.py::test_overspending_rejected PASSED                [ 58%]
+tests/test_aidchain.py::test_only_recipient_can_confirm_receipt PASSED   [ 66%]
+tests/test_aidchain.py::test_tampering_detected_and_healed_by_consensus[False] PASSED [ 75%]
+tests/test_aidchain.py::test_tampering_detected_and_healed_by_consensus[True] PASSED [ 83%]
+tests/test_aidchain.py::test_fork_resolution_longest_chain_wins PASSED   [ 91%]
+tests/test_aidchain.py::test_persistence_roundtrip PASSED                [100%]
+============================= 12 passed in 5.65s ==============================

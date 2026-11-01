@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AidChain</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <svg viewBox="0 0 32 32" width="34" height="34" aria-hidden="true">
+      <rect x="2" y="9" width="12" height="14" rx="3" fill="#4c8dff"/>
+      <rect x="18" y="9" width="12" height="14" rx="3" fill="#ffd23f"/>
+      <path d="M14 16h4" stroke="#e8edf7" stroke-width="2.5"/>
+    </svg>
+    <div>
+      <div class="name">AidChain</div>
+      <div class="tagline">Прозорий облік благодійної допомоги на блокчейні</div>
+    </div>
+  </div>
+  <div class="chips" id="techChips"></div>
+  <button class="ghost" id="resetBtn" title="Відтворити демонстраційний сценарій">↺ Скинути демо</button>
+</header>
+
+<main>
+  <section class="stats" id="stats"></section>
+
+  <section>
+    <div class="section-head">
+      <h2>Мережа вузлів</h2>
+      <p>Кожен вузол зберігає власну копію ланцюжка й самостійно перевіряє кожен блок. Консенсус — правило Накамото (найбільша сумарна робота).</p>
+    </div>
+    <div class="nodes" id="nodes"></div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Ланцюжок блоків <span class="muted" id="chainOf"></span></h2>
+      <p>Натисніть на блок, щоб побачити заголовок, аудит із 7 перевірок, транзакції та доведення Меркла.</p>
+    </div>
+    <div class="chain" id="chain"></div>
+    <div id="blockDetail"></div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Збори коштів</h2>
+      <p>Баланси не зберігаються окремо — вони щоразу відтворюються з підписаних транзакцій ланцюжка.</p>
+    </div>
+    <div class="campaigns" id="campaigns"></div>
+  </section>
+
+  <section class="two">
+    <div class="panel">
+      <h2>Дії учасника</h2>
+      <p class="muted">Оберіть учасника — інтерфейс покаже дії, дозволені його роллю. Транзакцію буде підписано його ключем Ed25519.</p>
+      <div class="field"><label>Учасник</label><select id="actorSelect"></select></div>
+      <div id="actorForms"></div>
+    </div>
+    <div class="panel">
+      <h2>Mempool <span class="muted" id="mempoolOf"></span></h2>
+      <p class="muted">Підписані транзакції, що очікують на включення в блок. Натисніть «⛏ Майнити» на будь-якому вузлі.</p>
+      <div id="mempool"></div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="panel">
+      <h2>Куди пішли мої гроші?</h2>
+      <p class="muted">Простежте внесок від донату до підтвердження отримання — з номерами блоків на кожному кроці.</p>
+      <div class="field"><label>Внесок</label><select id="donationSelect"></select></div>
+      <div id="trace"></div>
+    </div>
+    <div class="panel">
+      <h2>Перевірка документа</h2>
+      <p class="muted">Рахунки, накладні та акти «закріплено» в блокчейні своїм SHA-256. Перетягніть файл, щоб перевірити його справжність.</p>
+      <label class="drop" id="drop">
+        <input type="file" id="fileInput" hidden>
+        <span>📄 Перетягніть файл сюди або натисніть для вибору</span>
+      </label>
+      <div class="samples">Зразки:
+        <a href="/samples/invoice_drones.txt">рахунок (оригінал)</a> ·
+        <a href="/samples/invoice_drones_FORGED.txt">рахунок (підроблений)</a> ·
+        <a href="/samples/act_generators.txt">акт приймання</a>
+      </div>
+      <div id="verifyResult"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Журнал подій мережі</h2></div>
+    <div class="log" id="log"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>

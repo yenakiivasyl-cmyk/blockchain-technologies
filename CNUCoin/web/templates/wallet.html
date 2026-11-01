@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ m.Alias }}{% endblock %}
+{% block content %}
+<h1>Гаманець · {{ m.Alias }} {% if m.IsMiner %}<span class="pill miner">майнер</span>{% endif %}</h1>
+<p class="sub mono">{{ m.CNUCoinID }}</p>
+
+<div class="card">
+  <div class="balance">
+    <div><div class="l">Усього</div><div class="v">{{ bal.total | cnu }}</div></div>
+    <div><div class="l">Доступно до витрати</div><div class="v" style="color:var(--ok)">{{ bal.spendable | cnu }}</div></div>
+    <div><div class="l">Заблоковано (чекає наступного блоку)</div><div class="v" style="color:var(--accent)">{{ bal.locked | cnu }}</div></div>
+    <div><div class="l">Зарезервовано (в черзі)</div><div class="v">{{ bal.pending_out | cnu }}</div></div>
+  </div>
+</div>
+
+<div class="grid g2" style="margin-top:18px">
+  <div class="card">
+    <h2>Електронний гаманець (EWalletTable)</h2>
+    <table>
+      <tr><th>Дата</th><th>Тип</th><th>Контрагент</th><th class="num">Сума</th><th>Статус</th></tr>
+      {% for w in history %}
+      <tr>
+        <td class="mono">{{ w.TADate[:19].replace('T', ' ') }}</td>
+        <td>{{ {'GENESIS': 'Стартовий', 'TRANSFER': 'Переказ', 'REWARD': 'Винагорода'}[w.Kind] }}</td>
+        <td>{% set other = w.TAFrom if w.TASum > 0 else w.TATo %}{{ names.get(other, other) }}</td>
+        <td class="num {{ 'plus' if w.TASum > 0 else 'minus' }}">{{ '+' if w.TASum > 0 }}{{ w.TASum | cnu }}</td>
+        <td>{% if w.Kind == 'GENESIS' or w.TASum < 0 or w.Confirmations >= 1 %}<span class="pill ok">доступно</span>
+            {% else %}<span class="pill wait">0 підтв.</span>{% endif %}</td>
+      </tr>
+      {% else %}<tr><td colspan="5" class="empty">Порожньо</td></tr>{% endfor %}
+    </table>
+  </div>
+  <div>
+    <div class="card">
+      <h2>Надіслати CNUCoin</h2>
+      <form method="post" action="{{ url_for('send') }}">
+        <input type="hidden" name="sender" value="{{ m.CNUCoinID }}">
+        <div class="row"><label>Адреса отримувача</label>
+          <select name="recipient">{% for o in others %}<option value="{{ o.CNUCoinID }}">{{ o.Alias }} — {{ o.CNUCoinID | short(12) }}</option>{% endfor %}</select></div>
+        <div class="row"><label>Сума, CNU</label><input name="amount" type="number" step="0.01" min="0.01" required></div>
+        <button>Підписати та надіслати</button>
+      </form>
+    </div>
+    {% if m.IsMiner %}
+    <div class="card" style="margin-top:18px">
+      <h2>⛏ Майнінг</h2>
+      <form method="post" action="{{ url_for('mine') }}">
+        <input type="hidden" name="miner" value="{{ m.CNUCoinID }}">
+        <input type="hidden" name="difficulty" value="1">
+        <button>Видобути блок (Difficulty «0…»)</button>
+      </form>
+    </div>
+    {% endif %}
+    <div class="card" style="margin-top:18px">
+      <details><summary>Ключі ЕЦП</summary>
+        <p class="sub" style="margin:10px 0 4px">Публічний (CnuCoinMembersTable)</p><pre class="key">{{ m.PublicKey }}</pre>
+        <p class="sub" style="margin:10px 0 4px">Приватний (PrivateTable — бачить лише власник)</p><pre class="key">{{ private_key }}</pre>
+      </details>
+    </div>
+  </div>
+</div>
+{% endblock %}

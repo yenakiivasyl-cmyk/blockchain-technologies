@@ -1,0 +1,17 @@
+{# Візуалізація ланцюжка блоків. Очікує: blocks, audit #}
+{% set bad_ids = audit.blocks | rejectattr('ok') | map(attribute='BlockID') | list %}
+<div class="chain">
+  {% for b in blocks %}
+    {% if not loop.first %}<div class="link"></div>{% endif %}
+    <div class="block {{ 'genesis' if b.BlockID == 0 }} {{ 'bad' if b.BlockID in bad_ids }}">
+      <div class="n">Блок #{{ b.BlockID }}{% if b.BlockID == 0 %} · генезис{% endif %}</div>
+      {% set zeros = b.Difficulty or 0 %}
+      <div class="h"><b>{{ b.BlockChainHash[:zeros] }}</b>{{ b.BlockChainHash[zeros:22] }}…</div>
+      <div class="m">Nonce {{ b.Nonce }}{% if b.Attempts %} · {{ b.Attempts }} спроб{% endif %}</div>
+      {% if b.BlockID %}
+        <div class="m">{{ b.FromAlias }} → {{ b.ToAlias }} · <b>{{ b.TASum | cnu }}</b> CNU</div>
+        <div class="m">⛏ {{ b.MinerAlias }} · +{{ b.Reward | cnu }}</div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>

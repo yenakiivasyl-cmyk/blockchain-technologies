@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Оглядач блоків{% endblock %}
+{% block content %}
+<h1>Оглядач блоків</h1>
+<p class="sub">Кожен блок: BlockChainHash = SHA-256(TAHash + PrevHash + Nonce), підписаний ЕЦП майнера.</p>
+
+<div class="card">
+  <h2>BlockChainTable</h2>
+  <table>
+    <tr><th>#</th><th>BlockChainHash / PrevHash</th><th>Nonce</th><th>Спроб · час</th><th>Майнер</th><th>Аудит</th></tr>
+    {% for b in blocks %}
+    {% set a = (audit.blocks | selectattr('BlockID', 'equalto', b.BlockID) | first) %}
+    <tr>
+      <td><b>{{ b.BlockID }}</b></td>
+      <td class="mono">{{ b.BlockChainHash }}<br><span style="color:var(--muted)">↳ {{ b.PrevHash }}</span></td>
+      <td class="num">{{ b.Nonce }}</td>
+      <td class="num">{% if b.Attempts %}{{ b.Attempts }} · {{ '%.2f' | format(b.MiningTimeMs) }} мс{% else %}—{% endif %}</td>
+      <td>{{ b.MinerAlias or 'генезис' }}</td>
+      <td>{% if not a %}<span class="pill ok">генезис</span>
+          {% elif a.ok %}<span class="pill ok">✔ 5/5</span>
+          {% else %}{% for k, v in a.checks.items() if not v %}<span class="pill bad">✘ {{ CHECK_TITLES[k] }}</span> {% endfor %}{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div class="card" style="margin-top:18px">
+  <h2>TransactionsTable</h2>
+  <table>
+    <tr><th>TAID</th><th>Дата</th><th>Від → Кому</th><th class="num">Сума</th><th>TAHash</th><th>Nonce</th><th>Статус</th></tr>
+    {% for t in txs %}
+    <tr>
+      <td>#{{ t.TAID }}</td>
+      <td class="mono">{{ t.TADate[:19].replace('T', ' ') }}</td>
+      <td>{{ t.FromAlias }} → {{ t.ToAlias }}</td>
+      <td class="num">{{ t.TASum | cnu }}</td>
+      <td class="mono">{{ t.TAHash | short(16) }}</td>
+      <td class="num">{{ t.Nonce if t.Nonce is not none else '—' }}</td>
+      <td>{% if not t.TAApproved %}<span class="pill wait">очікує майнінгу</span>
+          {% elif t.Confirmations >= 1 %}<span class="pill ok">підтверджено · {{ t.Confirmations }}</span>
+          {% else %}<span class="pill wait">у блоці · 0 підтв.</span>{% endif %}</td>
+    </tr>
+    {% else %}<tr><td colspan="7" class="empty">Транзакцій ще немає</td></tr>{% endfor %}
+  </table>
+</div>
+{% endblock %}

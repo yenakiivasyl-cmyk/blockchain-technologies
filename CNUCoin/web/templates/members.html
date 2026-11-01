@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Учасники{% endblock %}
+{% block content %}
+<h1>Реєстр учасників</h1>
+<p class="sub">Публічна таблиця CnuCoinMembersTable: адреса та публічний ключ доступні всім учасникам.</p>
+<div class="grid g2">
+  <div class="card">
+    <table>
+      <tr><th>Учасник</th><th>CNUCoinID = SHA-256(PublicKey)</th><th class="num">Баланс</th></tr>
+      {% for m, b in rows %}
+      <tr>
+        <td><a href="{{ url_for('wallet', cnucoin_id=m.CNUCoinID) }}">{{ m.Alias }}</a>
+          {% if m.IsMiner %}<span class="pill miner">майнер</span>{% endif %}</td>
+        <td class="mono">{{ m.CNUCoinID | short(24) }}</td>
+        <td class="num">{{ b.total | cnu }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="3" class="empty">Ще немає жодного учасника</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="card">
+    <h2>Реєстрація</h2>
+    <form method="post">
+      <div class="row"><label>Псевдонім</label><input name="alias" required placeholder="напр., Богдан"></div>
+      <div class="row"><label>Стартовий баланс, CNU</label><input name="initial" type="number" min="0" step="0.01" value="100"></div>
+      <div class="row check"><input type="checkbox" id="is_miner" name="is_miner"><label for="is_miner">Брати участь у майнінгу (IsMiner)</label></div>
+      <button>Згенерувати ключі та зареєструвати</button>
+    </form>
+    <p class="sub" style="margin-top:14px;font-size:13px">Буде згенеровано пару ключів ECDSA secp256k1. Приватний ключ потрапить у PrivateTable,
+      адреса — SHA-256 від публічного ключа.</p>
+  </div>
+</div>
+{% endblock %}

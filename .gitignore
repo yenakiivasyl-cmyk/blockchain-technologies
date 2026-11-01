@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Робочі дані: містять приватні ключі демо-учасників, створюються під час запуску
+*.db
+CNUCoin/output/*_result.json
+AidChain/data/state.json
+*.log
+
+# Особисті файли та матеріали викладача
+lab_1.docx
+Lab1.pdf
+Lab2.pdf
+Project_Blockchain.pdf
+Звіти/
+reports/img/udemy_*
+reports/build_course.py

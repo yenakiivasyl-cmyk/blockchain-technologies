@@ -1,0 +1,10 @@
+tests/test_cnucoin.py::test_address_is_hash_of_public_key PASSED         [ 11%]
+tests/test_cnucoin.py::test_signature_roundtrip PASSED                   [ 22%]
+tests/test_cnucoin.py::test_first_transaction_uses_genesis_zeros PASSED  [ 33%]
+tests/test_cnucoin.py::test_cannot_overspend_including_pending PASSED    [ 44%]
+tests/test_cnucoin.py::test_non_miner_cannot_mine PASSED                 [ 55%]
+tests/test_cnucoin.py::test_mining_moves_funds_and_locks_until_next_block PASSED [ 66%]
+tests/test_cnucoin.py::test_higher_difficulty PASSED                     [ 77%]
+tests/test_cnucoin.py::test_validator_detects_tampering PASSED           [ 88%]
+tests/test_cnucoin.py::test_validator_detects_broken_link PASSED         [100%]
+============================== 9 passed in 0.52s ==============================
